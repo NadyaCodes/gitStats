@@ -47,7 +47,37 @@
     <% } %>
     </tbody>
   </table>
-  <hr/>
+  <hr />
+
+  <table>
+    <thead>
+      <tr>
+        <th><h2> PROGRESS CUBE</h2></th>
+      </tr>
+    </thead>
+    <tbody>
+    <% for (let i = 0; i < weeksData.length; i++) { %>
+      <tr>
+        <td>Week <%= [i] %></td>
+        <% for (let j = 0; j < 7; j++) { %>
+          <% if ( weeksData[i][j].count < median && weeksData[i][j].count !== 0) { %>
+            <td>🙂</td>
+          <% } %>
+          <% if ( weeksData[i][j].count === median) { %>
+            <td>😀</td>
+          <% } %>
+          <% if ( weeksData[i][j].count > median) { %>
+            <td>😁</td>
+          <% } %>
+          <% if ( weeksData[i][j].count === 0) { %>
+            <td></td>
+          <% } %>
+        <% } %>
+      </tr>
+    <% } %>
+    </tbody>
+  </table>
+  <hr />
 
    <% if (weeksData.length > 0) { %>
     <h3>Current Week </h3>
