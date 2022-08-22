@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+   <meta charset="UTF-8">
+   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+   <meta http-equiv="X-UA-Compatible" content="ie=edge">
+   <link rel="stylesheet" href="app.css">
+   <script src="app.js"></script>
+   <title>templates</title>
+</head>
+<body>
+   <h1>Hello <%= user%></h1>
+   <h2>Number of Weeks: <%=weeks %></h2>
+   <h3> Median contributions: <%=median %></h3>
+   <br />
+   <h2> PROGRESS</h2>
+   <% for (let i = 0; i < weeksData.length; i++) { %>
+    <h2><%=weeksData[i].weekEmojiString%></h2>
+   <% } %>
+
+   <br />
+
+   <% if (weeksData.length > 0) { %>
+    <h3>Current Week </h3>
+    <% for (let i = 6; i >= 0; i--) { %>
+     <p><%= daysArray[i]%>: <%= weeksData[0][i].count %></p>
+     <h4><%=weeksData[0][i].type%></h4>
+     <h4><%=weeksData[0][i].emojiString%></h4>
+     <br />
+    <% } %>
+    <h2><%=weeksData[0].weekEmojiString%></h2>
+     <br />
+   <% } %>
+
+   <% if (weeksData.length > 1) { %>
+    <h3>Last Week</h3>
+    <% for (let i = 6; i >= 0; i--) { %>
+     <p><%= daysArray[i]%>: <%= weeksData[1][i].count %></p>
+     <h4><%=weeksData[1][i].type%></h4>
+     <h4><%=weeksData[1][i].emojiString%></h4>
+     <br />
+    <% } %>
+    <h2><%=weeksData[1].weekEmojiString%></h2>
+    <br />
+   <% } %>
+
+
+   <% if (weeksData.length > 2) { %>
+    <% for (let i = 2; i < weeksData.length; i++) { %>
+      <h3><%= i %> Weeks Ago </h3>
+      <% for (let j = 6; j >= 0; j--) { %>
+        <p><%= daysArray[j]%>: <%= weeksData[i][j].count %></p>
+        <h4><%=weeksData[i][j].type%></h4>
+        <h4><%=weeksData[i][j].emojiString%></h4>
+        <br />
+       <% } %>
+       <h2><%=weeksData[i].weekEmojiString%></h2>
+       <br />
+     <% } %>
+
+     <br />
+   <% } %>
+
+</body>
+</html>
