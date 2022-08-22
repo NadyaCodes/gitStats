@@ -13,23 +13,50 @@
    <h2>Number of Weeks: <%=weeks %></h2>
    <h3> Median contributions: <%=median %></h3>
    <br />
-   <h2> PROGRESS</h2>
-   <% for (let i = 0; i < weeksData.length; i++) { %>
-    <h2><%=weeksData[i].weekEmojiString%></h2>
-   <% } %>
-
+    <table>
+      <thead>
+        <tr>
+          <th><h2> PROGRESS</h2></th>
+        </tr>
+      </thead>
+      <tbody>
+      <% for (let i = 0; i < weeksData.length; i++) { %>
+        <tr>
+          <td><%=weeksData[i].weekEmojiString%></td>
+        </tr>
+      <% } %>
+      </tbody>
+    </table>
    <br />
+   <hr />
+   <table>
+    <thead>
+      <tr>
+        <th><h2> PROGRESS CUBE</h2></th>
+      </tr>
+    </thead>
+    <tbody>
+    <% for (let i = 0; i < weeksData.length; i++) { %>
+      <tr>
+        <td>Week <%= [i] %></td>
+        <% for (let j = 0; j < 7; j++) { %>
+          
+          <td><%= weeksData[i][j].count %></td>
+        <% } %>
+      </tr>
+    <% } %>
+    </tbody>
+  </table>
+  <hr/>
 
    <% if (weeksData.length > 0) { %>
     <h3>Current Week </h3>
     <% for (let i = 6; i >= 0; i--) { %>
-     <p><%= daysArray[i]%>: <%= weeksData[0][i].count %></p>
-     <h4><%=weeksData[0][i].type%></h4>
-     <h4><%=weeksData[0][i].emojiString%></h4>
+     <p><%= daysArray[i]%>: <%= weeksData[0][i].count %> &nbsp; <%=weeksData[0][i].type%></>
+     <p><%=weeksData[0][i].emojiString%></p>
      <br />
     <% } %>
-    <h2><%=weeksData[0].weekEmojiString%></h2>
-     <br />
+    <hr />
    <% } %>
 
    <% if (weeksData.length > 1) { %>
@@ -40,8 +67,7 @@
      <h4><%=weeksData[1][i].emojiString%></h4>
      <br />
     <% } %>
-    <h2><%=weeksData[1].weekEmojiString%></h2>
-    <br />
+    <hr />
    <% } %>
 
 
@@ -54,8 +80,7 @@
         <h4><%=weeksData[i][j].emojiString%></h4>
         <br />
        <% } %>
-       <h2><%=weeksData[i].weekEmojiString%></h2>
-       <br />
+       <hr />
      <% } %>
 
      <br />
