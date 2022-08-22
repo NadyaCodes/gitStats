@@ -4,7 +4,7 @@
    <meta charset="UTF-8">
    <meta name="viewport" content="width=device-width, initial-scale=1.0">
    <meta http-equiv="X-UA-Compatible" content="ie=edge">
-   <link rel="stylesheet" href="app.css">
+   <link rel="stylesheet" href="/styles/app.css">
    <script src="app.js"></script>
    <title>templates</title>
 </head>
@@ -71,6 +71,36 @@
           <% } %>
           <% if ( weeksData[i][j].count === 0) { %>
             <td></td>
+          <% } %>
+        <% } %>
+      </tr>
+    <% } %>
+    </tbody>
+  </table>
+  <hr />
+
+  <table>
+    <thead>
+      <tr>
+        <th><h2> PROGRESS CUBE</h2></th>
+      </tr>
+    </thead>
+    <tbody>
+    <% for (let i = 0; i < weeksData.length; i++) { %>
+      <tr>
+        <td>Week <%= [i] %></td>
+        <% for (let j = 0; j < 7; j++) { %>
+          <% if ( weeksData[i][j].count < median && weeksData[i][j].count !== 0) { %>
+            <td class="progressBox pale"></td>
+          <% } %>
+          <% if ( weeksData[i][j].count === median) { %>
+            <td class="progressBox med"></td>
+          <% } %>
+          <% if ( weeksData[i][j].count > median) { %>
+            <td class="progressBox dark"></td>
+          <% } %>
+          <% if ( weeksData[i][j].count === 0) { %>
+            <td class="progressBox empty"></td>
           <% } %>
         <% } %>
       </tr>

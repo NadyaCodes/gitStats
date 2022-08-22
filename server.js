@@ -1,4 +1,3 @@
-
 const express = require('express');
 require('dotenv').config()
 const app = express();
@@ -21,8 +20,9 @@ app.set("view engine", "ejs");
 
 //     // GET /static/style.css etc.
 //     app.use('/static', express.static(__dirname + '/public'));
-app.use(express.static(__dirname + '/styles'));
+// app.use(express.static(__dirname + '/styles'));
 // app.use(express.static(__dirname + '/public'));
+app.use(express.static(__dirname + '/public'));
 
 
 
@@ -81,6 +81,7 @@ app.get('/:user/:weeks/:emoji?/', function (req, res) {
   .then(function (response) {
     const userData = response.data
     const median = userData.median
+
 
     let index = 0
     for (let i = weekNumber; i > (weekNumber - weeks); i--) {
