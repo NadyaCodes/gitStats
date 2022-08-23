@@ -109,6 +109,25 @@
   </table>
   <hr />
 
+  <table>
+    <thead>
+      <tr>
+        <th><h2> PROGRESS BAR</h2></th>
+      </tr>
+    </thead>
+    <tbody>
+    <% for (let i = 0; i < weeksData.length; i++) { %>
+      <tr>
+        <td>Week <%= [i] %></td>
+        <% for (let j = 0; j < 7; j++) { %>
+          <td class="bar" style="border-bottom: <%= weeksData[i][j].count%>rem solid rgb(120, 193, 169)"></td>
+        <% } %>
+      </tr>
+    <% } %>
+    </tbody>
+  </table>
+  <hr />
+
    <% if (weeksData.length > 0) { %>
     <h3>Current Week </h3>
     <% for (let i = 6; i >= 0; i--) { %>

@@ -27,3 +27,17 @@ td.progressBox {
 .empty {
   background-color: transparent;
 }
+
+body > table:nth-child(14) {
+  border-collapse: separate;
+  border-spacing: 10px 10px;
+}
+
+td.bar {
+  background-color: transparent;
+  width: 20px;
+  /* padding: 1px; */
+  -webkit-box-shadow: 0px 0px 3px -1px #000000; 
+  box-shadow: 0px 0px 3px -1px #000000;
+  /* padding: 10px; */
+}
