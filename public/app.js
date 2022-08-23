@@ -24,3 +24,17 @@
 // }
 
 // module.exports = {findType}
+
+// function convertToImage() {
+//   var resultDiv = document.getElementById("progressBarImage");
+//   html2canvas(document.getElementById("progressBarTable"), {
+//       onrendered: function(canvas) {
+//           var img = canvas.toDataURL("progress/png");
+//           result.innerHTML = '<a download="progress.jpeg" href="'+img+'">test</a>';
+//           }
+//   });
+// }
+// convertToImage()    
+// //click event
+// var convertBtn = document.getElementById("convert");
+// convertBtn.addEventListener('click', convertToImage);

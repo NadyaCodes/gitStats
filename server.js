@@ -35,7 +35,7 @@ app.get('/', function (req, res) {
   res.render('display',{user:'Rahul'});
 });
 
-app.get('/:user/:weeks/:emoji?/', function (req, res) {
+app.get('/:user/:weeks/:emoji/', function (req, res) {
 
   const user = req.params.user
   const weeks = req.params.weeks
@@ -135,6 +135,110 @@ app.get('/:user/:weeks/:emoji?/', function (req, res) {
 
 
     res.render('display',{user, weeks, weeksData, daysArray, median});
+  })
+  .catch(function (error) {
+    // handle error
+    console.log(error);
+    res.send("Refresh and try again")
+  })
+
+  // res.send("Refresh and try again")
+});
+
+
+//AXIOS REQUEST IS HARD-CODED...WILL NEED TO BE CHANGE IN DEPLOYMENT
+
+// app.get('/:user/:weeks/:emoji/json', function (req, res) {
+//   const user = req.params.user
+//   const weeks = req.params.weeks
+//   const emoji = req.params.emoji
+
+//   axios.get(`http://localhost:${PORT}/${user}/${weeks}/${emoji}`)
+//   .then(function (response) {
+//     console.log("HI")
+//     console.log(response)
+//     // const table1 = response.data.find('<table id="progressBarTable">')
+//     // email.substring(email.indexOf('@') + 1)
+//       // ("progressBarTable")
+
+//       let tableString = ''
+//       for (let i = 0; i < weeks; i++) {
+//         tableString +=
+//       } 
+
+//       const table = '<table id="progressBarTable"><thead><tr><th><h2> PROGRESS BAR</h2></th></tr></thead><tbody><% for (let i = 0; i < weeksData.length; i++) { %><tr><td>Week <%= [i] %></td><% for (let j = 0; j < 7; j++) { %><td class="bar" style="border-bottom: <%= weeksData[i][j].count%>rem solid rgb(120, 193, 169)"></td><% } %></tr><% } %></tbody></table><hr />'
+//       // const afterTable = response.data.split(tableStart).pop
+
+//     res.send(table);
+//   })
+//   .catch(function (error) {
+//     // handle error
+//     console.log(error);
+//     res.send("Refresh and try again")
+//   })
+// })
+
+app.get('/:user/:weeks/:emoji/bar/json', function (req, res) {
+
+  const user = req.params.user
+  const weeks = req.params.weeks
+  // let singleEmoji = '';
+  if (req.params.emoji !== 'app.css' && req.params.emoji !== 'app.js') {
+    singleEmoji = req.params.emoji
+  }
+
+  const weeksData = []
+  // const daysArray = ["Sunday", "Monday", "Tuedsay", "Wednesday", "Thursday", "Friday", "Saturday"]
+  
+  const currentYear = new Date().getFullYear()
+
+  const currentDate = new Date();
+  const startDate = new Date(currentDate.getFullYear(), 0, 1);
+  const days = Math.floor((currentDate - startDate) /
+      (24 * 60 * 60 * 1000));
+       
+  const weekNumber = parseInt(Math.ceil(days / 7));
+
+
+  axios.get(`https://skyline.github.com/${user}/${currentYear}.json`)
+  .then(function (response) {
+    const userData = response.data
+
+
+    for (let i = weekNumber; i > (weekNumber - weeks); i--) {
+      weeksData.push(userData.contributions[i].days)
+    }
+    
+    const makeTableBody = function (i) {
+      let tableBodyString = ''
+      for (let j = 0; j < 7; j++) {
+        tableBodyString += `<td class="bar" style="border-bottom: ${weeksData[i][j].count}rem solid rgb(120, 193, 169); width: 20px"></td>`
+      }
+      console.log(tableBodyString)
+      return tableBodyString
+    }
+
+
+    let tableString = ''
+
+    for (let i = 0; i < weeksData.length; i++) {
+      tableString += `<tr><td> Week ${i}</td>`
+      tableString += makeTableBody(i)
+      tableString += `</tr>`
+    }
+
+    const table = `<table id="progressBarTable">
+    <thead>
+      <tr>
+        <th><h2> PROGRESS BAR</h2></th>
+      </tr>
+    </thead>
+    <tbody>
+    ${tableString}
+    </tbody>
+  </table>`
+
+    res.send(table);
   })
   .catch(function (error) {
     // handle error
