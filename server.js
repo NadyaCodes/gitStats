@@ -5,6 +5,7 @@ const PORT = process.env.PORT
 const morgan = require("morgan");
 const axios = require('axios').default;
 app.set("view engine", "ejs");
+const htmlToImage = require('html-to-image');
 
 // // const path = require('path')
 // // app.use(express.static(path.join(__dirname, 'public')));
@@ -34,6 +35,196 @@ app.get('/', function (req, res) {
   console.log("req.params", req.params)
   res.render('display',{user:'Rahul'});
 });
+
+app.get('/:user/:weeks/bar', function (req, res) {
+
+  const user = req.params.user
+  const weeks = req.params.weeks
+  // let singleEmoji = '';
+  // if (req.params.emoji !== 'app.css' && req.params.emoji !== 'app.js') {
+  //   singleEmoji = req.params.emoji
+  // }
+
+  const weeksData = []
+  // const daysArray = ["Sunday", "Monday", "Tuedsay", "Wednesday", "Thursday", "Friday", "Saturday"]
+  
+  const currentYear = new Date().getFullYear()
+
+  const currentDate = new Date();
+  const startDate = new Date(currentDate.getFullYear(), 0, 1);
+  const days = Math.floor((currentDate - startDate) /
+      (24 * 60 * 60 * 1000));
+       
+  const weekNumber = parseInt(Math.ceil(days / 7));
+
+
+  axios.get(`https://skyline.github.com/${user}/${currentYear}.json`)
+  .then(function (response) {
+    const userData = response.data
+
+
+    for (let i = weekNumber; i > (weekNumber - weeks); i--) {
+      weeksData.push(userData.contributions[i].days)
+    }
+    
+    const makeTableBody = function (i) {
+      let tableBodyString = ''
+      for (let j = 0; j < 7; j++) {
+        tableBodyString += `<td class="bar" style="border-bottom: ${weeksData[i][j].count}rem solid rgb(120, 193, 169); width: 20px"></td>`
+      }
+      return tableBodyString
+    }
+
+
+    let tableString = ''
+
+    for (let i = 0; i < weeksData.length; i++) {
+      tableString += `<tr><td> Week ${i}</td>`
+      tableString += makeTableBody(i)
+      tableString += `</tr>`
+    }
+
+    const table = `<table id="progressBarTable">
+    <thead>
+      <tr>
+        <th><h2> PROGRESS BAR</h2></th>
+      </tr>
+    </thead>
+    <tbody>
+    ${tableString}
+    </tbody>
+  </table>`
+
+    res.send(table);
+  })
+  .catch(function (error) {
+    // handle error
+    console.log(error);
+    res.send("Refresh and try again")
+  })
+
+});
+
+
+
+
+app.get('/:user/:weeks/cube', function (req, res) {
+
+  const user = req.params.user
+  const weeks = req.params.weeks
+
+  const weeksData = []
+  
+  const currentYear = new Date().getFullYear()
+
+  const currentDate = new Date();
+  const startDate = new Date(currentDate.getFullYear(), 0, 1);
+  const days = Math.floor((currentDate - startDate) /
+      (24 * 60 * 60 * 1000));
+       
+  const weekNumber = parseInt(Math.ceil(days / 7));
+
+
+  axios.get(`https://skyline.github.com/${user}/${currentYear}.json`)
+  .then(function (response) {
+    const userData = response.data
+    const median = userData.median
+
+    for (let i = weekNumber; i > (weekNumber - weeks); i--) {
+
+      weeksData.push(userData.contributions[i].days)
+        
+      }
+
+    const makeCubeString = (i) => {
+      let cubeString = ``
+
+      for (let j = 0; j < 7; j++) {
+        if ( weeksData[i][j].count < median && weeksData[i][j].count !== 0) {
+          cubeString += `<td class="progressBox pale"></td>`
+        }
+        if ( weeksData[i][j].count === median) {
+          cubeString += `<td class="progressBox med"></td>`
+        }
+        if ( weeksData[i][j].count > median) {
+          cubeString += `<td class="progressBox dark"></td>`
+        }
+        if ( weeksData[i][j].count === 0) {
+          cubeString += `<td class="progressBox empty"></td>`
+        }
+      }
+      return cubeString
+    }
+
+
+
+    let tableBodyString = ``
+
+    for (let i = 0; i < weeksData.length; i++) {
+      tableBodyString += `<tr><td>Week ${i}</td>`
+      tableBodyString += makeCubeString(i)
+      tableBodyString += `</tr>`
+    }
+
+    const tableCss = `
+    <style>
+    td.progressBox {
+      width: 20px;
+      height: 20px;
+      border: .03rem solid black;
+    }
+    
+    
+    .pale {
+      background-color: rgb(181, 231, 214);
+    }
+    
+    .med {
+      background-color: rgb(120, 193, 169);
+    }
+    
+    
+    .dark {
+      background-color: rgb(78, 140, 120);
+    }
+    
+    
+    .empty {
+      background-color: transparent;
+    }
+    </style>
+    `
+
+    const table = `
+    ${tableCss}
+    <table>
+    <thead>
+      <tr>
+        <th><h2> PROGRESS CUBE</h2></th>
+      </tr>
+    </thead>
+    <tbody>
+          ${tableBodyString}
+    </tbody>
+  </table>
+  <hr />`
+
+
+    res.send(table);
+  })
+  .catch(function (error) {
+    // handle error
+    console.log(error);
+    res.send("Refresh and try again")
+  })
+
+  // res.send("Refresh and try again")
+});
+
+
+
+
+
 
 app.get('/:user/:weeks/:emoji/', function (req, res) {
 
@@ -146,108 +337,13 @@ app.get('/:user/:weeks/:emoji/', function (req, res) {
 });
 
 
-//AXIOS REQUEST IS HARD-CODED...WILL NEED TO BE CHANGE IN DEPLOYMENT
-
-// app.get('/:user/:weeks/:emoji/json', function (req, res) {
-//   const user = req.params.user
-//   const weeks = req.params.weeks
-//   const emoji = req.params.emoji
-
-//   axios.get(`http://localhost:${PORT}/${user}/${weeks}/${emoji}`)
-//   .then(function (response) {
-//     console.log("HI")
-//     console.log(response)
-//     // const table1 = response.data.find('<table id="progressBarTable">')
-//     // email.substring(email.indexOf('@') + 1)
-//       // ("progressBarTable")
-
-//       let tableString = ''
-//       for (let i = 0; i < weeks; i++) {
-//         tableString +=
-//       } 
-
-//       const table = '<table id="progressBarTable"><thead><tr><th><h2> PROGRESS BAR</h2></th></tr></thead><tbody><% for (let i = 0; i < weeksData.length; i++) { %><tr><td>Week <%= [i] %></td><% for (let j = 0; j < 7; j++) { %><td class="bar" style="border-bottom: <%= weeksData[i][j].count%>rem solid rgb(120, 193, 169)"></td><% } %></tr><% } %></tbody></table><hr />'
-//       // const afterTable = response.data.split(tableStart).pop
-
-//     res.send(table);
-//   })
-//   .catch(function (error) {
-//     // handle error
-//     console.log(error);
-//     res.send("Refresh and try again")
-//   })
-// })
-
-app.get('/:user/:weeks/:emoji/bar/json', function (req, res) {
-
-  const user = req.params.user
-  const weeks = req.params.weeks
-  // let singleEmoji = '';
-  if (req.params.emoji !== 'app.css' && req.params.emoji !== 'app.js') {
-    singleEmoji = req.params.emoji
-  }
-
-  const weeksData = []
-  // const daysArray = ["Sunday", "Monday", "Tuedsay", "Wednesday", "Thursday", "Friday", "Saturday"]
-  
-  const currentYear = new Date().getFullYear()
-
-  const currentDate = new Date();
-  const startDate = new Date(currentDate.getFullYear(), 0, 1);
-  const days = Math.floor((currentDate - startDate) /
-      (24 * 60 * 60 * 1000));
-       
-  const weekNumber = parseInt(Math.ceil(days / 7));
 
 
-  axios.get(`https://skyline.github.com/${user}/${currentYear}.json`)
-  .then(function (response) {
-    const userData = response.data
 
 
-    for (let i = weekNumber; i > (weekNumber - weeks); i--) {
-      weeksData.push(userData.contributions[i].days)
-    }
-    
-    const makeTableBody = function (i) {
-      let tableBodyString = ''
-      for (let j = 0; j < 7; j++) {
-        tableBodyString += `<td class="bar" style="border-bottom: ${weeksData[i][j].count}rem solid rgb(120, 193, 169); width: 20px"></td>`
-      }
-      console.log(tableBodyString)
-      return tableBodyString
-    }
 
 
-    let tableString = ''
 
-    for (let i = 0; i < weeksData.length; i++) {
-      tableString += `<tr><td> Week ${i}</td>`
-      tableString += makeTableBody(i)
-      tableString += `</tr>`
-    }
-
-    const table = `<table id="progressBarTable">
-    <thead>
-      <tr>
-        <th><h2> PROGRESS BAR</h2></th>
-      </tr>
-    </thead>
-    <tbody>
-    ${tableString}
-    </tbody>
-  </table>`
-
-    res.send(table);
-  })
-  .catch(function (error) {
-    // handle error
-    console.log(error);
-    res.send("Refresh and try again")
-  })
-
-  // res.send("Refresh and try again")
-});
 
 app.listen(PORT, (error) =>{
     if(!error) {console.log("Server is Successfully Running, and App is listening on port "+ PORT)}
