@@ -40,13 +40,7 @@ app.get('/:user/:weeks/bar', function (req, res) {
 
   const user = req.params.user
   const weeks = req.params.weeks
-  // let singleEmoji = '';
-  // if (req.params.emoji !== 'app.css' && req.params.emoji !== 'app.js') {
-  //   singleEmoji = req.params.emoji
-  // }
-
   const weeksData = []
-  // const daysArray = ["Sunday", "Monday", "Tuedsay", "Wednesday", "Thursday", "Friday", "Saturday"]
   
   const currentYear = new Date().getFullYear()
 
@@ -70,7 +64,7 @@ app.get('/:user/:weeks/bar', function (req, res) {
     const makeTableBody = function (i) {
       let tableBodyString = ''
       for (let j = 0; j < 7; j++) {
-        tableBodyString += `<td class="bar" style="border-bottom: ${weeksData[i][j].count}rem solid rgb(120, 193, 169); width: 20px"></td>`
+        tableBodyString += `<td class="bar" style="border-bottom: ${weeksData[i][j].count}rem solid rgb(120, 193, 169)"></td>`
       }
       return tableBodyString
     }
@@ -79,15 +73,34 @@ app.get('/:user/:weeks/bar', function (req, res) {
     let tableString = ''
 
     for (let i = 0; i < weeksData.length; i++) {
-      tableString += `<tr><td> Week ${i}</td>`
+      tableString += `<tr><td>${i}</td>`
       tableString += makeTableBody(i)
       tableString += `</tr>`
+      tableString += `<tr class="spacer"></tr>`;
     }
 
-    const table = `<table id="progressBarTable">
+    const tableCss = `
+    <style>
+    td.bar {
+      background-color: transparent;
+      width: 20px;
+      -webkit-box-shadow: 0px 0px 3px -1px #000000; 
+      box-shadow: 0px 0px 3px -1px #000000;
+    }
+    tr.spacer {
+      background-color: transparent;
+      width: 20px;
+      height: 15px
+    }
+    </style>
+    `
+
+    const table = `
+    ${tableCss}
+    <table id="progressBarTable">
     <thead>
       <tr>
-        <th><h2> PROGRESS BAR</h2></th>
+        <th colspan="7"><h2>Bar</h2></th>
       </tr>
     </thead>
     <tbody>
@@ -161,13 +174,14 @@ app.get('/:user/:weeks/cube', function (req, res) {
     let tableBodyString = ``
 
     for (let i = 0; i < weeksData.length; i++) {
-      tableBodyString += `<tr><td>Week ${i}</td>`
+      tableBodyString += `<tr>`
       tableBodyString += makeCubeString(i)
       tableBodyString += `</tr>`
     }
 
     const tableCss = `
     <style>
+
     td.progressBox {
       width: 20px;
       height: 20px;
@@ -199,8 +213,8 @@ app.get('/:user/:weeks/cube', function (req, res) {
     ${tableCss}
     <table>
     <thead>
-      <tr>
-        <th><h2> PROGRESS CUBE</h2></th>
+      <tr  >
+        <th colspan="7"><h2> Cube</h2></th>
       </tr>
     </thead>
     <tbody>
