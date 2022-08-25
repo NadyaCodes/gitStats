@@ -73,10 +73,10 @@ app.get('/:user/:weeks/bar', function (req, res) {
     let tableString = ''
 
     for (let i = 0; i < weeksData.length; i++) {
-      tableString += `<tr><td>${i}</td>`
+      tableString += `<tr><td>Week ${i}</td><td class="spacerTD"></td>`
       tableString += makeTableBody(i)
       tableString += `</tr>`
-      tableString += `<tr class="spacer"></tr>`;
+      tableString += `<tr class="spacerTR"></tr>`;
     }
 
     const tableCss = `
@@ -87,10 +87,14 @@ app.get('/:user/:weeks/bar', function (req, res) {
       -webkit-box-shadow: 0px 0px 3px -1px #000000; 
       box-shadow: 0px 0px 3px -1px #000000;
     }
-    tr.spacer {
+    tr.spacerTR {
       background-color: transparent;
       width: 20px;
       height: 15px
+    }
+    td.spacerTD {
+      background-color: transparent;
+      width: 30px;
     }
     </style>
     `
@@ -121,10 +125,12 @@ app.get('/:user/:weeks/bar', function (req, res) {
 
 
 
-app.get('/:user/:weeks/cube', function (req, res) {
+app.get('/:user/:weeks/cube/:dir/:color?', function (req, res) {
 
   const user = req.params.user
   const weeks = req.params.weeks
+  const color = req.params.color || 'green'
+  const dir = req.params.dir 
 
   const weeksData = []
   
@@ -179,8 +185,44 @@ app.get('/:user/:weeks/cube', function (req, res) {
       tableBodyString += `</tr>`
     }
 
-    const tableCss = `
+    let paleColor = 'rgb(181, 231, 214)'
+    let medColor = 'rgb(120, 193, 169)'
+    let darkColor = 'rgb(78, 140, 120)'
+
+    if (color === 'purple') {
+      paleColor = '#9e6ce0';
+      medColor = '#6b38ad';
+      darkColor = '#431c76';
+    }
+
+    if (color === 'blue') {
+      paleColor = '#53eafe';
+      medColor = '#01adc4';
+      darkColor = '#017a8a';
+    }
+
+    if (color === 'pink') {
+      paleColor = '#EFA8B8';
+      medColor = '#de6984';
+      darkColor = '#ba3051';
+    }
+
+    if (color.length === 18) {
+      paleColor = '#' + color.slice(0, 6)
+      medColor = '#' + color.slice(6,12)
+      darkColor = '#' + color.slice(12, 18)
+    }
+
+
+    let tableCss = `
     <style>
+
+    table {
+      transform-origin: top left;
+      left:0;
+      top:0;
+    }
+
 
     td.progressBox {
       width: 20px;
@@ -190,16 +232,16 @@ app.get('/:user/:weeks/cube', function (req, res) {
     
     
     .pale {
-      background-color: rgb(181, 231, 214);
+      background-color: ${paleColor};
     }
     
     .med {
-      background-color: rgb(120, 193, 169);
+      background-color: ${medColor};
     }
     
     
     .dark {
-      background-color: rgb(78, 140, 120);
+      background-color: ${darkColor};
     }
     
     
@@ -209,19 +251,23 @@ app.get('/:user/:weeks/cube', function (req, res) {
     </style>
     `
 
+    if (dir === 'horizontal') {
+      tableCss += `
+      <style>
+      table {
+        transform: rotate(90deg) translateY(-100%);
+      }
+      </style>
+      `
+    }
+
     const table = `
     ${tableCss}
     <table>
-    <thead>
-      <tr  >
-        <th colspan="7"><h2> Cube</h2></th>
-      </tr>
-    </thead>
     <tbody>
           ${tableBodyString}
     </tbody>
-  </table>
-  <hr />`
+  </table>`
 
 
     res.send(table);
