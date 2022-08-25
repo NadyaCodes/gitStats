@@ -73,18 +73,17 @@ function createCubeCss(color, dir) {
   .empty {
     background-color: transparent;
   }
-  </script>
   `
 
   if (dir === 'horizontal') {
     tableCss += `
-    <script>
     table {
       transform: rotate(90deg) translateY(-100%);
     }
-    </script>
     `
   }
+
+  tableCss += `</script>`
 
   return tableCss
 }
