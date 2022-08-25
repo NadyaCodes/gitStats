@@ -5,7 +5,8 @@ const PORT = process.env.PORT
 const morgan = require("morgan");
 const axios = require('axios').default;
 app.set("view engine", "ejs");
-const htmlToImage = require('html-to-image');
+// const htmlToImage = require('html-to-image');
+const {findWeekNumber, createCubeCss} = require('./public/helpers');
 
 // // const path = require('path')
 // // app.use(express.static(path.join(__dirname, 'public')));
@@ -44,12 +45,13 @@ app.get('/:user/:weeks/bar', function (req, res) {
   
   const currentYear = new Date().getFullYear()
 
-  const currentDate = new Date();
-  const startDate = new Date(currentDate.getFullYear(), 0, 1);
-  const days = Math.floor((currentDate - startDate) /
-      (24 * 60 * 60 * 1000));
+  // const currentDate = new Date();
+  // const startDate = new Date(currentDate.getFullYear(), 0, 1);
+  // const days = Math.floor((currentDate - startDate) /
+  //     (24 * 60 * 60 * 1000));
        
-  const weekNumber = parseInt(Math.ceil(days / 7));
+  // const weekNumber = parseInt(Math.ceil(days / 7));
+  const weekNumber = findWeekNumber();
 
 
   axios.get(`https://skyline.github.com/${user}/${currentYear}.json`)
@@ -131,146 +133,24 @@ app.get('/:user/:weeks/cube/:dir/:color?', function (req, res) {
   const weeks = req.params.weeks
   const color = req.params.color || 'green'
   const dir = req.params.dir 
-
-  const weeksData = []
-  
   const currentYear = new Date().getFullYear()
-
-  const currentDate = new Date();
-  const startDate = new Date(currentDate.getFullYear(), 0, 1);
-  const days = Math.floor((currentDate - startDate) /
-      (24 * 60 * 60 * 1000));
-       
-  const weekNumber = parseInt(Math.ceil(days / 7));
-
 
   axios.get(`https://skyline.github.com/${user}/${currentYear}.json`)
   .then(function (response) {
     const userData = response.data
     const median = userData.median
-
+    const weeksData = []
+    const weekNumber = findWeekNumber();
+  
     for (let i = weekNumber; i > (weekNumber - weeks); i--) {
-
+  
       weeksData.push(userData.contributions[i].days)
         
-      }
-
-    const makeCubeString = (i) => {
-      let cubeString = ``
-
-      for (let j = 0; j < 7; j++) {
-        if ( weeksData[i][j].count < median && weeksData[i][j].count !== 0) {
-          cubeString += `<td class="progressBox pale"></td>`
-        }
-        if ( weeksData[i][j].count === median) {
-          cubeString += `<td class="progressBox med"></td>`
-        }
-        if ( weeksData[i][j].count > median) {
-          cubeString += `<td class="progressBox dark"></td>`
-        }
-        if ( weeksData[i][j].count === 0) {
-          cubeString += `<td class="progressBox empty"></td>`
-        }
-      }
-      return cubeString
     }
 
-
-
-    let tableBodyString = ``
-
-    for (let i = 0; i < weeksData.length; i++) {
-      tableBodyString += `<tr>`
-      tableBodyString += makeCubeString(i)
-      tableBodyString += `</tr>`
-    }
-
-    let paleColor = 'rgb(181, 231, 214)'
-    let medColor = 'rgb(120, 193, 169)'
-    let darkColor = 'rgb(78, 140, 120)'
-
-    if (color === 'purple') {
-      paleColor = '#9e6ce0';
-      medColor = '#6b38ad';
-      darkColor = '#431c76';
-    }
-
-    if (color === 'blue') {
-      paleColor = '#53eafe';
-      medColor = '#01adc4';
-      darkColor = '#017a8a';
-    }
-
-    if (color === 'pink') {
-      paleColor = '#EFA8B8';
-      medColor = '#de6984';
-      darkColor = '#ba3051';
-    }
-
-    if (color.length === 18) {
-      paleColor = '#' + color.slice(0, 6)
-      medColor = '#' + color.slice(6,12)
-      darkColor = '#' + color.slice(12, 18)
-    }
-
-
-    let tableCss = `
-    <style>
-
-    table {
-      transform-origin: top left;
-      left:0;
-      top:0;
-    }
-
-
-    td.progressBox {
-      width: 20px;
-      height: 20px;
-      border: .03rem solid black;
-    }
-    
-    
-    .pale {
-      background-color: ${paleColor};
-    }
-    
-    .med {
-      background-color: ${medColor};
-    }
-    
-    
-    .dark {
-      background-color: ${darkColor};
-    }
-    
-    
-    .empty {
-      background-color: transparent;
-    }
-    </style>
-    `
-
-    if (dir === 'horizontal') {
-      tableCss += `
-      <style>
-      table {
-        transform: rotate(90deg) translateY(-100%);
-      }
-      </style>
-      `
-    }
-
-    const table = `
-    ${tableCss}
-    <table>
-    <tbody>
-          ${tableBodyString}
-    </tbody>
-  </table>`
-
-
-    res.send(table);
+    const tableCss = createCubeCss(color, dir)
+  
+    res.render('cube', {weeksData, tableCss, median});
   })
   .catch(function (error) {
     // handle error
@@ -278,9 +158,32 @@ app.get('/:user/:weeks/cube/:dir/:color?', function (req, res) {
     res.send("Refresh and try again")
   })
 
+
+  // const table = await createTable(user, weeks, color, dir, currentYear)
+
+
+  // res.send(table)
+
   // res.send("Refresh and try again")
 });
 
+
+{/* <script>
+window.Squarespace.onInitialize(Y, function() {
+//   fetch('http://localhost:3000/nadyacodes/20/cube/horizontal/09BC8A004346172A3A')
+// .then(response => {
+//     return response.text()
+// }).then(function (html) {
+// document.body.innerHTML = html     
+// .catch(err => {
+//     console.log(err);
+// });
+  var fetchAndParse = async (url) => { let div = document.createElement("div"); div.innerHTML = await (await fetch(url)).text(); return div }
+
+  fetchAndParse('http://localhost:3000/nadyacodes/20/cube/horizontal/09BC8A004346172A3A')
+});
+  
+</script> */}
 
 
 
@@ -300,12 +203,13 @@ app.get('/:user/:weeks/:emoji/', function (req, res) {
   
   const currentYear = new Date().getFullYear()
 
-  const currentDate = new Date();
-  const startDate = new Date(currentDate.getFullYear(), 0, 1);
-  const days = Math.floor((currentDate - startDate) /
-      (24 * 60 * 60 * 1000));
+  // const currentDate = new Date();
+  // const startDate = new Date(currentDate.getFullYear(), 0, 1);
+  // const days = Math.floor((currentDate - startDate) /
+  //     (24 * 60 * 60 * 1000));
        
-  const weekNumber = parseInt(Math.ceil(days / 7));
+  // const weekNumber = parseInt(Math.ceil(days / 7));
+  const weekNumber = findWeekNumber();
 
   if (singleEmoji === 'smile') {
     singleEmoji = '🙂';

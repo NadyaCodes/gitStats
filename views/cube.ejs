@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+   <meta charset="UTF-8">
+   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+   <meta http-equiv="X-UA-Compatible" content="ie=edge">
+   <link rel="stylesheet" href="/styles/app.css">
+   <script src="app.js"></script>
+   <title>templates</title>
+   <style><%=tableCss%>
+    /* table {
+      transform-origin: top left;
+      left:0;
+      top:0;
+    }
+  
+  
+    td.progressBox {
+      width: 20px;
+      height: 20px;
+      border: .03rem solid black;
+    }
+    
+    
+    .pale {
+      background-color: ${paleColor};
+    }
+    
+    .med {
+      background-color: ${medColor};
+    }
+    
+    
+    .dark {
+      background-color: ${darkColor};
+    }
+    
+    
+    .empty {
+      background-color: transparent;
+    } */
+    </style>
+
+
+  <script>
+    table {
+      transform: rotate(90deg) translateY(-100%);
+    }
+    </script>
+   
+</head>
+<body>
+
+
+ 
+  <table>
+    <tbody>
+    <% for (let i = 0; i < weeksData.length; i++) { %>
+      <tr>
+        <% for (let j = 0; j < 7; j++) { %>
+          <% if ( weeksData[i][j].count < median && weeksData[i][j].count !== 0) { %>
+            <td class="progressBox pale"></td>
+          <% } %>
+          <% if ( weeksData[i][j].count === median) { %>
+            <td class="progressBox med"></td>
+          <% } %>
+          <% if ( weeksData[i][j].count > median) { %>
+            <td class="progressBox dark"></td>
+          <% } %>
+          <% if ( weeksData[i][j].count === 0) { %>
+            <td class="progressBox empty"></td>
+          <% } %>
+        <% } %>
+      </tr>
+    <% } %>
+    </tbody>
+  </table>
+
+</body>
+</html>
