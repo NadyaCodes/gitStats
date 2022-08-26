@@ -43,9 +43,7 @@ function createCubeCss(color, dir) {
   let tableCss = `
   <script>
   table {
-    transform-origin: top left;
-    left:0;
-    top:0;
+
   }
 
 
@@ -78,7 +76,10 @@ function createCubeCss(color, dir) {
   if (dir === 'horizontal') {
     tableCss += `
     table {
-      transform: rotate(90deg) translateY(-100%);
+      transform: rotate(90deg);
+      display: flex;
+      justify-content:center;
+      padding-left: 10rem;
     }
     `
   }
