@@ -130,7 +130,7 @@ app.get('/:user/:weeks/bar', function (req, res) {
 app.get('/:user/:weeks/cube/:dir/:color?', function (req, res) {
 
   const user = req.params.user
-  const weeks = req.params.weeks
+  const weeks = parseInt(req.params.weeks)
   const color = req.params.color || 'green'
   const dir = req.params.dir 
   const currentYear = new Date().getFullYear()

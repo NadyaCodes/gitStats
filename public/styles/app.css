@@ -3,6 +3,7 @@
 } */
 
 /* body > table:nth-child(12) > tbody > tr:nth-child(1) > td.progressBox.med */
+
 td.progressBox {
   width: 20px;
   height: 20px;

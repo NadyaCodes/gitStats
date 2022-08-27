@@ -43,7 +43,7 @@ function createCubeCss(color, dir) {
   let tableCss = `
   <script>
   table {
-
+    
   }
 
 
@@ -76,10 +76,17 @@ function createCubeCss(color, dir) {
   if (dir === 'horizontal') {
     tableCss += `
     table {
-      transform: rotate(90deg);
-      display: flex;
-      justify-content:center;
-      padding-left: 10rem;
+      -webkit-transform: translateY(-100%) rotate(90deg); /* Safari */
+      -moz-transform: translateY(-100%) rotate(90deg); /* Firefox 3.6 Firefox 4 */
+      /*-moz-transform-origin: right top; */
+      -ms-transform: translateY(-100%) rotate(90deg); /* IE9 */
+      -o-transform: translateY(-100%) rotate(90deg); /* Opera */
+      transform: translateY(-100%) rotate(90deg); /* W3C */  
+      -webkit-transform-origin: left bottom;
+      -moz-transform-origin: left bottom;
+      -ms-transform-origin: left bottom;
+      -o-transform-origin: left bottom;
+      transform-origin: left bottom;
     }
     `
   }
