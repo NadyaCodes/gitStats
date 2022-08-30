@@ -67,15 +67,11 @@ function createCubeCss(color, dir) {
     background-color: ${darkColor};
   }
   
-  
   .empty {
     background-color: transparent;
   }
 
-  .noBorder {
-    background-color: transparent;
-    border: none !important;
-  }
+
   `
 
   if (dir === 'horizontal') {
@@ -92,6 +88,13 @@ function createCubeCss(color, dir) {
       -ms-transform-origin: left bottom;
       -o-transform-origin: left bottom;
       transform-origin: left bottom;
+    }
+
+    .lastYearText {
+      text-align: center;
+      writing-mode: vertical-rl;
+      text-orientation: upright;
+      transform: rotate(-90deg)
     }
     `
   }
