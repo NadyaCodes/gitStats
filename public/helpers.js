@@ -71,6 +71,11 @@ function createCubeCss(color, dir) {
   .empty {
     background-color: transparent;
   }
+
+  .noBorder {
+    background-color: transparent;
+    border: none !important;
+  }
   `
 
   if (dir === 'horizontal') {

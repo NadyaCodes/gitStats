@@ -134,29 +134,85 @@ app.get('/:user/:weeks/cube/:dir/:color?', function (req, res) {
   const color = req.params.color || 'green'
   const dir = req.params.dir 
   const currentYear = new Date().getFullYear()
+  const weekNumber = findWeekNumber();  
 
-  axios.get(`https://skyline.github.com/${user}/${currentYear}.json`)
-  .then(function (response) {
-    const userData = response.data
-    const median = userData.median
-    const weeksData = []
-    const weekNumber = findWeekNumber();
+  if (weekNumber >= weeks ) {
+    axios.get(`https://skyline.github.com/${user}/${currentYear}.json`)
+    .then(function (response) {
+      const userData = response.data
+      const median = userData.median
+      const weeksData = []
   
-    for (let i = weekNumber; i > (weekNumber - weeks); i--) {
+      for (let i = weekNumber; i > (weekNumber - weeks); i--) {
   
-      weeksData.push(userData.contributions[i].days)
-        
-    }
+        weeksData.push(userData.contributions[i].days)
+  
+      }
+  
+      const tableCss = createCubeCss(color, dir)
+    
+      res.render('cube', {weeksData, tableCss, median});
+    })
+    .catch(function (error) {
+      // handle error
+      console.log(error);
+      res.send("Refresh and try again")
+    })
+  } else {
 
-    const tableCss = createCubeCss(color, dir)
+    axios.get(`https://skyline.github.com/${user}/${currentYear}.json`)
+    .then(function (response) {
+      const userData1 = response.data
+      const median = userData1.median
+      const weeksData = []
+      for (let i = weekNumber; i > 0; i--) {
   
-    res.render('cube', {weeksData, tableCss, median});
-  })
-  .catch(function (error) {
-    // handle error
-    console.log(error);
-    res.send("Refresh and try again")
-  })
+        weeksData.push(userData1.contributions[i].days)
+  
+      }
+
+      axios.get(`https://skyline.github.com/${user}/${(currentYear - 1)}.json`)
+      .then(function (response) {
+        const userData2 = response.data;
+        const weeksLeft = weeks - weekNumber;
+        const weeksData2 = []
+        for (let i = 52; i > weeksLeft; i--) {
+          if (userData2.contributions[i].days.length === 7) {
+            weeksData2.push(userData2.contributions[i].days)
+          } else {
+            let daysLeft = 7 - userData2.contributions[i].days.length
+            const emptyDay = { count: -1 }
+            let fullWeek = userData2.contributions[i].days
+            
+            for (let i = 0; i < daysLeft; i++) {
+              fullWeek = [...fullWeek, emptyDay]
+            }
+            weeksData2.push(fullWeek)
+          }
+        }
+
+    
+        const tableCss = createCubeCss(color, dir)
+      
+        res.render('cube', {weeksData, weeksData2, tableCss, median});
+      }).catch(function (error) {
+        // handle error
+        console.log(error);
+        res.send("Refresh and try again")
+      })
+
+    })
+  
+
+    .catch(function (error) {
+      // handle error
+      console.log(error);
+      res.send("Refresh and try again")
+    })
+
+  }
+
+
 
 
   // const table = await createTable(user, weeks, color, dir, currentYear)

@@ -31,6 +31,28 @@
         <% } %>
       </tr>
     <% } %>
+    <tr><td colspan="7">Last Year</td></tr>
+    <% for (let i = 0; i < weeksData2.length; i++) { %>
+      <tr>
+        <% for (let j = 0; j < 7; j++) { %>
+          <% if ( weeksData2[i][j].count < median && weeksData2[i][j].count > 0) { %>
+            <td class="progressBox pale"></td>
+          <% } %>
+          <% if ( weeksData2[i][j].count === median) { %>
+            <td class="progressBox med"></td>
+          <% } %>
+          <% if ( weeksData2[i][j].count > median) { %>
+            <td class="progressBox dark"></td>
+          <% } %>
+          <% if ( weeksData2[i][j].count === 0) { %>
+            <td class="progressBox empty"></td>
+          <% } %>
+          <% if ( weeksData2[i][j].count < 0) { %>
+            <td class="progressBox" style="border: none"></td>
+          <% } %>
+        <% } %>
+      </tr>
+    <% } %>
     </tbody>
   </table>
 
