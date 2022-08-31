@@ -11,6 +11,8 @@
    
 </head>
 <body>
+  <div  class="allTables">
+    <div class="singleTable">
   <table>
     <tbody class="thisYear">
     <% for (let i = 0; i < weeksData.length; i++) { %>
@@ -31,10 +33,13 @@
         <% } %>
       </tr>
     <% } %>
+  </div>
   </tbody>
-
+  </table>
+  <h2 class="lastYearText">Last Year</h2>
+  <div class="singleTable">
+  <table>
     <tbody class="lastYear">
-      <tr><td colspan="7" class="lastYearText">Last Year</td></tr>
     <% for (let i = 0; i < weeksData2.length; i++) { %>
       <tr>
         <% for (let j = 0; j < 7; j++) { %>
@@ -58,6 +63,7 @@
     <% } %>
     </tbody>
   </table>
-
+</div>
+</div>
 </body>
 </html>

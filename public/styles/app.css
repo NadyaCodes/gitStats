@@ -5,8 +5,8 @@
 /* body > table:nth-child(12) > tbody > tr:nth-child(1) > td.progressBox.med */
 
 td.progressBox {
-  width: 20px;
-  height: 20px;
+  width: 10px;
+  height: 10px;
   border: .03rem solid black;
 }
 

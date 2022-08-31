@@ -42,14 +42,10 @@ function createCubeCss(color, dir) {
 
   let tableCss = `
   <script>
-  table {
-    
-  }
-
 
   td.progressBox {
-    width: 20px;
-    height: 20px;
+    width: 10px;
+    height: 10px;
     border: .03rem solid black;
   }
   
@@ -76,7 +72,17 @@ function createCubeCss(color, dir) {
 
   if (dir === 'horizontal') {
     tableCss += `
+    .allTables {
+      display: flex;
+      flex-direction: row;
+      justify-content: center;
+    }
+    .singleTable {
+      width: 50%;
+    }
+    
     table {
+      
       -webkit-transform: translateY(-100%) rotate(90deg); /* Safari */
       -moz-transform: translateY(-100%) rotate(90deg); /* Firefox 3.6 Firefox 4 */
       /*-moz-transform-origin: right top; */
@@ -91,10 +97,10 @@ function createCubeCss(color, dir) {
     }
 
     .lastYearText {
-      text-align: center;
+      // text-align: center;
       writing-mode: vertical-rl;
       text-orientation: upright;
-      transform: rotate(-90deg)
+      // transform: rotate(-90deg)
     }
     `
   }
